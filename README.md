@@ -1,59 +1,23 @@
-# CarRentalManagement
+# Car Rental Management System - Frontend 🚗💻
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
+Welcome to the frontend repository of the Car Rental Management System! This is a modern, single-page application (SPA) built to provide a seamless user experience for both customers and administrators. 
 
-## Development server
+## 🌟 Overview
+This frontend application connects to a secure RESTful API (Spring Boot) and provides an intuitive, responsive interface designed with Tailwind CSS. It handles user authentication, vehicle browsing, and secure booking processes.
 
-To start a local development server, run:
+## 🚀 Built With
+* **Framework:** Angular (v15+)
+* **Styling:** Tailwind CSS
+* **HTTP Client:** Angular HttpClient (RxJS)
+* **Routing:** Angular Router
 
-```bash
-ng serve
-```
+## ✨ Key Features
+* **Secure Authentication:** JWT-based login and registration system.
+* **Role-Based Access Control (RBAC):** Distinct dashboards and capabilities for `ADMIN` and `CUSTOMER` roles.
+* **Responsive UI:** Fully responsive design built with Tailwind CSS, ensuring a smooth experience across desktop and mobile devices.
+* **Vehicle Browsing:** Easy-to-use interface for customers to view and search available rental cars.
+* **Booking System:** Streamlined process for reserving vehicles.
+* **Admin Dashboard:** Comprehensive management area for administrators to handle cars, users, and bookings.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🔌 Backend Connectivity
+This frontend is designed to work in tandem with the Car Rental System Backend. It expects a secure Spring Boot API running on `localhost:8080`.
