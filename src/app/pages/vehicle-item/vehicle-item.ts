@@ -1,0 +1,15 @@
+import { Component, Input } from '@angular/core'; // Input import කරන්න
+import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-vehicle-item',
+  standalone: true,
+  imports: [RouterLink, CommonModule],
+  templateUrl: './vehicle-item.html',
+  styleUrl: './vehicle-item.css',
+})
+export class VehicleItem { 
+  // Parent එකෙන් එවන වාහන විස්තර මෙතැනට එනවා
+  @Input() vehicle: any; 
+}
