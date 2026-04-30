@@ -10,16 +10,32 @@
       </div>
 
       <div class="hidden md:flex space-x-8 items-center">
-        <a routerLink="/home" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent hover:border-green-500">Home</a>
-        <a routerLink="/vehicles" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent hover:border-green-500">Vehicles</a>
-        <a routerLink="/bookings" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent hover:border-green-500">My Bookings</a>
-        <a routerLink="/about" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent hover:border-green-500">About</a>
-        <a routerLink="/contactUs" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent hover:border-green-500">Contact_Us</a>
+        <a routerLink="/home" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">Home</a>
+        <a routerLink="/vehicles" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">Vehicles</a>
+        <a routerLink="/bookings" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">My Bookings</a>
+        <a routerLink="/about" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">About</a>
+        <a routerLink="/contactUs" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">Contact_Us</a>
       </div>
 
       <div class="hidden md:flex items-center space-x-6">
-        <a routerLink="/login" class="text-gray-300 hover:text-green-400 font-medium text-base transition duration-300">Login</a>
-        <button routerLink="/register" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2.5 px-6 rounded-full transition duration-300 shadow-[0_0_15px_rgba(34,197,94,0.4)]">Sign Up</button>
+        
+        <ng-container *ngIf="!(auth.isLoggedIn$ | async)">
+          <a routerLink="/login" class="text-gray-300 hover:text-green-400 font-medium text-base transition duration-300">Login</a>
+          <button routerLink="/register" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2.5 px-6 rounded-full transition duration-300 shadow-[0_0_15px_rgba(34,197,94,0.4)]">Sign Up</button>
+        </ng-container>
+
+        <ng-container *ngIf="auth.isLoggedIn$ | async">
+          <div class="flex items-center gap-6 bg-white/5 px-6 py-2 rounded-2xl border border-white/10">
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em]">Welcome,</span>
+              <span class="text-green-500 font-bold text-sm uppercase italic tracking-wider">{{ auth.currentUser$ | async }}</span>
+            </div>
+            <button (click)="onLogout()" class="text-red-500 font-black text-xs hover:text-red-400 transition uppercase tracking-widest pl-4 border-l border-white/10">
+              Logout
+            </button>
+          </div>
+        </ng-container>
+
       </div>
 
       <div class="md:hidden flex items-center">
@@ -38,8 +54,23 @@
       <a routerLink="/home" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">Home</a>
       <a routerLink="/vehicles" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">Vehicles</a>
       <a routerLink="/bookings" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">My Bookings</a>
-      <a routerLink="/login" (click)="toggleMenu()" class="block text-gray-300 px-3 py-4 text-lg font-bold">Login</a>
-      <button routerLink="/register" (click)="toggleMenu()" class="w-full bg-green-600 text-black font-black py-4 rounded-xl mt-4 uppercase">Sign Up</button>
+      <a routerLink="/about" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">About</a>
+      <a routerLink="/contactUs" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">Contact Us</a>
+
+      <div class="pt-4">
+        <ng-container *ngIf="!(auth.isLoggedIn$ | async)">
+          <a routerLink="/login" (click)="toggleMenu()" class="block text-gray-300 px-3 py-4 text-lg font-bold">Login</a>
+          <button routerLink="/register" (click)="toggleMenu()" class="w-full bg-green-600 text-black font-black py-4 rounded-xl mt-4 uppercase">Sign Up Now</button>
+        </ng-container>
+
+        <ng-container *ngIf="auth.isLoggedIn$ | async">
+          <div class="p-4 bg-white/5 rounded-2xl border border-white/10 mt-4">
+            <p class="text-gray-500 text-[10px] font-black uppercase mb-1">Active User</p>
+            <p class="text-green-500 font-bold text-xl uppercase mb-4">{{ auth.currentUser$ | async }}</p>
+            <button (click)="onLogout(); toggleMenu()" class="w-full bg-red-500/10 text-red-500 font-black py-4 rounded-xl border border-red-500/20 uppercase">Logout</button>
+          </div>
+        </ng-container>
+      </div>
     </div>
   </div>
 </nav>

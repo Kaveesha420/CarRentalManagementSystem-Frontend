@@ -1,0 +1,186 @@
+<div class="space-y-8 bg-[#0a0a0a] min-h-screen p-6">
+
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="text-4xl font-black uppercase tracking-tighter text-white">
+        Manage <span class="text-green-500">Cars</span>
+      </h2>
+      <p class="text-gray-500 text-sm mt-1 tracking-wide">Add, update, and remove vehicles from your rental fleet
+        efficiently.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+    <div class="lg:col-span-1">
+      <div class="bg-[#111] p-8 rounded-[2.5rem] border border-gray-900 sticky top-10 shadow-2xl">
+        <h3 class="text-xl font-bold mb-8 flex items-center gap-3 text-white">
+          <span class="text-green-500 text-2xl">{{ isEditMode ? '✎' : '✚' }}</span>
+          {{ isEditMode ? 'Update Vehicle' : 'Add New Vehicle' }}
+        </h3>
+
+        <form [formGroup]="carForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Brand</label>
+              <input type="text" formControlName="brand"
+                class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition"
+                placeholder="e.g., Toyota">
+            </div>
+            <div>
+              <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Model</label>
+              <input type="text" formControlName="model"
+                class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition"
+                placeholder="e.g., Axio">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Vehicle
+              Photo</label>
+            <div class="relative group">
+              <input type="file" (change)="onFileSelected($event)" accept="image/*"
+                class="w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-gray-800 file:text-green-500 hover:file:bg-gray-700 cursor-pointer">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Fuel
+                Type</label>
+              <select formControlName="fuelType"
+                class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition cursor-pointer">
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Electric">Electric</option>
+                <option value="Hybrid">Hybrid</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Seats</label>
+              <input type="number" formControlName="seatingCapacity"
+                class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition"
+                placeholder="5">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Rent Per Day
+              (LKR)</label>
+            <input type="number" formControlName="pricePerDay"
+              class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition"
+              placeholder="6500">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Current
+              Status</label>
+            <select formControlName="status"
+              class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition cursor-pointer">
+              <option value="AVAILABLE">Available</option>
+              <option value="BOOKED">Booked</option>
+              <option value="MAINTENANCE">Maintenance</option>
+            </select>
+          </div>
+
+          <button type="submit" [disabled]="carForm.invalid"
+            class="w-full bg-green-600 hover:bg-green-500 disabled:opacity-20 text-black font-black py-4 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-green-900/10 mt-4">
+            {{ isEditMode ? 'Update Vehicle' : 'Save Vehicle' }}
+          </button>
+
+          <button *ngIf="isEditMode" type="button" (click)="reset()"
+            class="w-full text-gray-600 text-[10px] font-black uppercase tracking-widest hover:text-white transition py-2">
+            Cancel Edit
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="lg:col-span-2">
+      <div class="bg-[#111] rounded-[2.5rem] border border-gray-900 overflow-hidden shadow-2xl relative">
+        <table class="w-full text-left">
+          <thead class="bg-[#181818] text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">
+            <tr>
+              <th class="p-6">Vehicle Details</th>
+              <th class="p-6">Specs</th>
+              <th class="p-6">Price/Day</th>
+              <th class="p-6 text-center">Status</th>
+              <th class="p-6 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm border-t border-gray-900">
+            <tr *ngFor="let car of vehicleList"
+              class="hover:bg-white/[0.02] transition border-b border-gray-900/50 group">
+              <td class="p-6">
+                <div class="flex items-center gap-5">
+                  <div
+                    class="w-20 h-14 bg-gray-900 rounded-xl overflow-hidden border border-gray-800 group-hover:border-green-500/50 transition duration-300">
+                    <img *ngIf="car.imagePath" [src]="'http://localhost:8080' + car.imagePath"
+                      class="w-full h-full object-cover">
+                    <div *ngIf="!car.imagePath"
+                      class="w-full h-full flex items-center justify-center text-gray-700 text-xl">🚗</div>
+                  </div>
+                  <div>
+                    <p class="font-bold text-white text-base">{{ car.brand }} {{ car.model }}</p>
+                    <p class="text-gray-500 text-[10px] uppercase tracking-widest">{{ car.id }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="p-6">
+                <div class="text-[10px] space-y-1 font-black text-gray-400">
+                  <p class="flex items-center gap-2"><span class="text-gray-600">⛽</span> {{ car.fuelType }}</p>
+                  <p class="flex items-center gap-2"><span class="text-gray-600">👥</span> {{ car.seatingCapacity }}
+                    SEATS</p>
+                </div>
+              </td>
+              <td class="p-6">
+                <p class="text-green-500 font-black text-base">LKR {{ car.pricePerDay | number }}</p>
+              </td>
+              <td class="p-6 text-center">
+                <span
+                  [ngClass]="car.status === 'AVAILABLE' ? 'text-green-500 bg-green-500/10 border-green-500/20' : 'text-orange-500 bg-orange-500/10 border-orange-500/20'"
+                  class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase border tracking-widest">
+                  {{ car.status }}
+                </span>
+              </td>
+              <td class="p-6 text-right">
+                <div class="flex justify-end gap-3">
+                  <button (click)="editVehicle(car)"
+                    class="p-3 bg-gray-900 hover:bg-blue-500/20 text-gray-500 hover:text-blue-400 rounded-xl transition duration-300">
+                    ✏️
+                  </button>
+                  <button (click)="deleteVehicle(car.id)"
+                    class="p-3 bg-gray-900 hover:bg-red-500/20 text-gray-500 hover:text-red-500 rounded-xl transition duration-300">
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div *ngIf="totalPages > 1"
+          class="p-6 bg-[#181818] border-t border-gray-900 flex justify-center items-center gap-2">
+          <button [disabled]="currentPage === 0" (click)="getVehicles(currentPage - 1)"
+            class="p-2 text-gray-500 hover:text-green-500 disabled:opacity-20 transition">←</button>
+
+          <button *ngFor="let p of pagesArray" (click)="getVehicles(p)"
+            [class]="p === currentPage ? 'bg-green-600 text-black' : 'text-gray-500 hover:text-white'"
+            class="w-8 h-8 rounded-lg font-black text-[10px] transition duration-300">
+            {{ p + 1 }}
+          </button>
+
+          <button [disabled]="currentPage === totalPages - 1" (click)="getVehicles(currentPage + 1)"
+            class="p-2 text-gray-500 hover:text-green-500 disabled:opacity-20 transition">→</button>
+        </div>
+
+        <div *ngIf="vehicleList.length === 0" class="p-32 text-center flex flex-col items-center gap-4">
+          <span class="text-4xl opacity-20">📂</span>
+          <p class="text-gray-700 font-bold uppercase tracking-widest text-[10px]">No vehicles registered in the fleet.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

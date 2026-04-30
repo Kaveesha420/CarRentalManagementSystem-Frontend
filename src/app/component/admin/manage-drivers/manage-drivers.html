@@ -1,0 +1,117 @@
+<div class="space-y-8 bg-[#0a0a0a] min-h-screen p-6">
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="text-4xl font-black uppercase tracking-tighter text-white">Manage <span class="text-green-500">Drivers</span></h2>
+      <p class="text-gray-500 text-sm mt-1 tracking-wide">Control your chauffeur fleet and availability efficiently.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+    <div class="lg:col-span-1">
+      <div class="bg-[#111] p-8 rounded-[2.5rem] border border-gray-900 sticky top-10 shadow-2xl">
+        <h3 class="text-xl font-bold mb-8 flex items-center gap-3 text-white">
+          <span class="text-green-500 text-2xl">{{ isEditMode ? '✎' : '✚' }}</span>
+          {{ isEditMode ? 'Update Driver' : 'Add New Driver' }}
+        </h3>
+
+        <form [formGroup]="driverForm" (ngSubmit)="onHandleSubmit()" class="space-y-6">
+          <div>
+            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Driver Name</label>
+            <input type="text" formControlName="name"
+              class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition"
+              placeholder="Full Name">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Contact Number</label>
+            <input type="text" formControlName="contactNo"
+              class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition"
+              placeholder="07XXXXXXXX">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">License Number</label>
+            <input type="text" formControlName="licenseNo"
+              class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition"
+              placeholder="B1234567">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">Availability Status</label>
+            <select formControlName="status"
+              class="w-full bg-black border border-gray-800 rounded-2xl px-5 py-4 text-sm text-white focus:border-green-500 outline-none transition cursor-pointer">
+              <option value="AVAILABLE">Available</option>
+              <option value="ON_TRIP">On Trip</option>
+              <option value="OFF_DUTY">Off Duty</option>
+            </select>
+          </div>
+
+          <button type="submit" [disabled]="driverForm.invalid"
+            class="w-full bg-green-600 hover:bg-green-500 disabled:opacity-20 text-black font-black py-4 rounded-2xl uppercase tracking-widest transition shadow-lg shadow-green-900/10 mt-4">
+            {{ isEditMode ? 'Update Driver' : 'Save Driver' }}
+          </button>
+
+          <button *ngIf="isEditMode" type="button" (click)="resetForm()"
+            class="w-full text-gray-600 text-[10px] font-black uppercase tracking-widest hover:text-white transition py-2">
+            Cancel Edit
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="lg:col-span-2">
+      <div class="bg-[#111] rounded-[2.5rem] border border-gray-900 overflow-hidden shadow-2xl">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-[#181818] text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">
+            <tr>
+              <th class="p-6">Driver Info</th>
+              <th class="p-6">License</th>
+              <th class="p-6">Status</th>
+              <th class="p-6 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm border-t border-gray-900">
+            <tr *ngFor="let d of driverList" class="hover:bg-white/[0.02] transition border-b border-gray-900/50 group">
+              <td class="p-6">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 bg-gray-900 rounded-2xl flex items-center justify-center font-black text-green-500 border border-gray-800 group-hover:border-green-500/50 transition">
+                    {{ d.name.charAt(0).toUpperCase() }}
+                  </div>
+                  <div>
+                    <p class="font-bold text-white text-base">{{ d.name }}</p>
+                    <p class="text-gray-500 text-xs mt-0.5">{{ d.contactNo }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="p-6 font-mono text-xs text-gray-400 tracking-wider">
+                {{ d.licenseNo }}
+              </td>
+              <td class="p-6">
+                <span [ngClass]="d.status === 'AVAILABLE' ? 'text-green-500 bg-green-500/10 border-green-500/20' : 'text-orange-500 bg-orange-500/10 border-orange-500/20'" 
+                      class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase border">
+                  {{ d.status }}
+                </span>
+              </td>
+              <td class="p-6 text-right">
+                <div class="flex justify-end gap-3">
+                  <button (click)="editDriver(d)" class="p-3 bg-gray-900 hover:bg-blue-500/20 text-gray-500 hover:text-blue-400 rounded-xl transition duration-300">
+                    ✏️
+                  </button>
+                  <button (click)="deleteDriver(d.id)" class="p-3 bg-gray-900 hover:bg-red-500/20 text-gray-500 hover:text-red-500 rounded-xl transition duration-300">
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div *ngIf="driverList.length === 0" class="p-32 text-center flex flex-col items-center gap-4">
+          <span class="text-4xl opacity-20">📂</span>
+          <p class="text-gray-700 font-bold uppercase tracking-widest text-xs">No active drivers detected in the system.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

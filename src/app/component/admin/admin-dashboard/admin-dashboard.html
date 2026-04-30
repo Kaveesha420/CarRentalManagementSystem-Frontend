@@ -1,0 +1,83 @@
+<div class="space-y-10">
+  <div>
+    <h2 class="text-3xl font-black uppercase tracking-tighter">System <span class="text-green-500">Overview</span></h2>
+    <p class="text-gray-500 text-sm mt-1">#1 Best trusted rental service in sri-lanka.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+    
+    <div class="bg-[#111] p-8 rounded-[2rem] border border-gray-900 border-l-green-500 border-l-4">
+      <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest">Total Sales</p>
+      <h3 class="text-2xl font-black mt-3 text-green-500">LKR {{ stats.totalRevenue | number }}</h3>
+      <p class="text-[10px] text-gray-600 mt-2 font-bold uppercase">Revenue Generated</p>
+    </div>
+
+    <div class="bg-[#111] p-8 rounded-[2rem] border border-gray-900 hover:border-green-500/30 transition-all duration-500 group">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-gray-500 text-xs font-black uppercase tracking-widest">Total Fleet</p>
+          <h3 class="text-4xl font-black mt-3 text-white group-hover:text-green-500 transition">{{ stats.totalCars }}</h3>
+        </div>
+        <span class="text-2xl bg-gray-900 p-3 rounded-2xl">🚗</span>
+      </div>
+    </div>
+
+    <div class="bg-[#111] p-8 rounded-[2rem] border border-gray-900 hover:border-blue-500/30 transition-all duration-500 group">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-gray-500 text-xs font-black uppercase tracking-widest">Bookings</p>
+          <h3 class="text-4xl font-black mt-3 text-white group-hover:text-blue-500 transition">{{ stats.totalBookings }}</h3>
+        </div>
+        <span class="text-2xl bg-gray-900 p-3 rounded-2xl">📅</span>
+      </div>
+    </div>
+
+    <div class="bg-[#111] p-8 rounded-[2rem] border border-gray-900 group">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-gray-500 text-xs font-black uppercase tracking-widest">Customers</p>
+          <h3 class="text-4xl font-black mt-3 text-white group-hover:text-purple-500 transition">{{ stats.totalCustomers }}</h3>
+        </div>
+        <span class="text-2xl bg-gray-900 p-3 rounded-2xl">👥</span>
+      </div>
+    </div>
+
+    <div class="bg-[#111] p-8 rounded-[2rem] border border-gray-900 group">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-gray-500 text-xs font-black uppercase tracking-widest">Drivers</p>
+          <h3 class="text-4xl font-black mt-3 text-white group-hover:text-orange-500 transition">{{ stats.totalDrivers }}</h3>
+        </div>
+        <span class="text-2xl bg-gray-900 p-3 rounded-2xl">👨‍✈️</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bg-[#111] border border-gray-900 rounded-[2.5rem] p-10 mt-10">
+    <div class="flex justify-between items-center mb-8">
+      <h4 class="text-xl font-bold">Recent System Activity</h4>
+      <button (click)="loadRecentActivity()" class="text-green-500 text-xs font-black uppercase tracking-widest hover:underline">Refresh</button>
+    </div>
+
+    <div class="space-y-4">
+      <div *ngFor="let log of recentActivity" class="flex items-center justify-between p-5 bg-black/40 rounded-2xl border border-gray-900/50 hover:border-green-500/20 transition group">
+        <div class="flex items-center gap-5">
+          <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center font-bold text-green-500 group-hover:bg-green-500 group-hover:text-black transition">
+            {{ log.action ? log.action.charAt(0) : 'A' }}
+          </div>
+          <div>
+            <p class="text-sm text-white font-bold">{{ log.description }}</p>
+            <p class="text-[10px] text-gray-600 uppercase font-black tracking-tighter">Performed by: {{ log.performedBy || 'System' }}</p>
+          </div>
+        </div>
+        <p class="text-[10px] text-gray-500 font-bold uppercase">{{ log.timestamp | date:'short' }}</p>
+      </div>
+
+      <div *ngIf="recentActivity.length === 0" class="flex flex-col items-center justify-center py-20 border-2 border-dashed border-gray-900 rounded-3xl">
+        <p class="text-gray-700 font-bold uppercase tracking-widest">No recent activity found</p>
+      </div>
+    </div>
+  </div>
+
+</div>

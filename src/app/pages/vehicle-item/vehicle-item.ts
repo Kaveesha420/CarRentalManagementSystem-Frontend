@@ -10,6 +10,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './vehicle-item.css',
 })
 export class VehicleItem { 
-  // Parent එකෙන් එවන වාහන විස්තර මෙතැනට එනවා
   @Input() vehicle: any; 
 }

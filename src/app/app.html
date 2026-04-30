@@ -1,5 +1,5 @@
-<div>
-  <app-nav-bar></app-nav-bar>
-  <router-outlet></router-outlet>
-  <app-footer></app-footer>
-</div>
+<app-nav-bar *ngIf="!isAdminPage"></app-nav-bar>
+
+<router-outlet></router-outlet>
+
+<app-footer *ngIf="!isAdminPage"></app-footer>

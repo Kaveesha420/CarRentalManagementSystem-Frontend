@@ -1,0 +1,128 @@
+<div class="space-y-8 bg-[#0a0a0a] min-h-screen p-6">
+  <div class="flex justify-between items-end">
+    <div>
+      <h2 class="text-4xl font-black uppercase tracking-tighter text-white">Manage <span class="text-green-500">Bookings</span></h2>
+      <p class="text-gray-500 text-sm mt-1 tracking-wide">Detailed overview and control of all client reservations.</p>
+    </div>
+    <button (click)="getAllBookings(currentPage)" class="text-[10px] font-black uppercase text-gray-500 hover:text-green-500 transition tracking-widest border-b border-gray-800 pb-1">
+      🔄 Sync Database
+    </button>
+  </div>
+
+  <div class="bg-[#111] rounded-[2.5rem] border border-gray-900 overflow-hidden shadow-2xl relative">
+    <table class="w-full text-left border-collapse">
+      <thead class="bg-[#181818] text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">
+        <tr>
+          <th class="p-8">Booking Ref</th>
+          <th class="p-8 text-center">Entity Details (Client & Fleet)</th>
+          <th class="p-8">Rental Schedule</th>
+          <th class="p-8">Financials</th>
+          <th class="p-8 text-center">Current Status</th>
+          <th class="p-8 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="text-sm border-t border-gray-900">
+        <tr *ngFor="let b of bookingList" class="hover:bg-white/[0.02] transition border-b border-gray-900/50 group">
+          
+          <td class="p-8">
+            <span class="text-gray-600 font-bold">#{{ b.id }}</span>
+          </td>
+
+          <td class="p-8">
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-green-500 text-[10px] font-black uppercase border border-green-500/20">C</div>
+                <div>
+                  <p class="text-white font-bold leading-none">{{ b.customerName || 'Standard Client' }}</p>
+                  <p class="text-gray-600 text-[9px] uppercase font-black mt-1">ID: {{ b.customerId }}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500 text-[10px] font-black uppercase border border-blue-500/20">V</div>
+                <div>
+                  <p class="text-gray-300 font-bold leading-none">{{ b.carName || 'Fleet Vehicle' }}</p>
+                  <p class="text-gray-600 text-[9px] uppercase font-black mt-1">Ref: {{ b.carId }}</p>
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td class="p-8">
+            <div class="space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                <p class="text-gray-400 text-xs font-medium"><span class="text-gray-600 uppercase text-[9px] font-black mr-2">Pickup:</span> {{ b.pickupDate }}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <p class="text-gray-400 text-xs font-medium"><span class="text-gray-600 uppercase text-[9px] font-black mr-2">Return:</span> {{ b.returnDate }}</p>
+              </div>
+              
+              <div *ngIf="b.withDriver" class="mt-3">
+                <span class="inline-block bg-green-600/10 text-green-500 text-[8px] font-black px-2 py-0.5 rounded border border-green-500/20 uppercase tracking-tighter italic mb-2">
+                  ✓ Driver Requested
+                </span>
+                
+                <select *ngIf="!b.driverId && b.bookingStatus === 'PENDING'" 
+                        (change)="onDriverAssign(b.id, $event)"
+                        class="w-full bg-black border border-gray-800 text-[10px] text-gray-400 rounded-lg px-2 py-2 outline-none focus:border-green-500 transition">
+                  <option value="">-- Assign Driver --</option>
+                  <option *ngFor="let d of availableDrivers" [value]="d.id">
+                    {{ d.name }} ({{ d.id }})
+                  </option>
+                </select>
+
+                <div *ngIf="b.driverId" class="flex items-center gap-2 mt-1">
+                  <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Assigned: {{ b.driverId }}</span>
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td class="p-8">
+            <p class="text-[10px] text-gray-600 uppercase font-black mb-1">Total Due</p>
+            <p class="text-lg font-black text-green-500">LKR {{ b.totalPrice | number }}</p>
+          </td>
+
+          <td class="p-8 text-center">
+            <span [ngClass]="{
+              'bg-yellow-500/10 text-yellow-500 border-yellow-500/20': b.bookingStatus === 'PENDING',
+              'bg-green-500/10 text-green-500 border-green-500/20': b.bookingStatus === 'CONFIRMED' || b.bookingStatus === 'COMPLETED',
+              'bg-red-500/10 text-red-500 border-red-500/20': b.bookingStatus === 'CANCELLED'
+            }" class="px-5 py-2 rounded-full text-[10px] font-black uppercase border tracking-[0.1em] shadow-inner">
+              {{ b.bookingStatus }}
+            </span>
+          </td>
+
+          <td class="p-8 text-right">
+            <div class="flex justify-end gap-3" *ngIf="b.bookingStatus === 'PENDING'">
+              <button *ngIf="!b.withDriver" (click)="updateStatus(b.id, 'CONFIRMED')" 
+                      class="bg-green-600 hover:bg-green-500 text-black px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95">
+                Approve Request
+              </button>
+              <button (click)="updateStatus(b.id, 'CANCELLED')" 
+                      class="bg-red-500/10 hover:bg-red-500/20 text-red-500 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 border border-red-500/20 active:scale-95">
+                Reject
+              </button>
+            </div>
+            <div *ngIf="b.bookingStatus !== 'PENDING'" class="flex justify-end items-center gap-2 text-gray-700">
+              <span class="text-[9px] font-black uppercase tracking-widest italic opacity-50">Transaction Finalized</span>
+              <span>🔒</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div *ngIf="totalPages > 1" class="p-8 bg-[#181818] border-t border-gray-900 flex justify-between items-center px-12">
+    </div>
+
+    <div *ngIf="bookingList.length === 0" class="p-40 text-center flex flex-col items-center gap-6">
+      <div class="w-20 h-20 rounded-[2rem] bg-gray-900 flex items-center justify-center text-3xl opacity-20 border border-gray-800">📂</div>
+      <div>
+        <p class="text-white font-black uppercase tracking-[0.2em] text-xs">Registry Empty</p>
+        <p class="text-gray-700 font-medium text-[10px] uppercase mt-1 tracking-widest">No customer reservations found in the database.</p>
+      </div>
+    </div>
+  </div>
+</div>
