@@ -1,0 +1,75 @@
+<div class="space-y-8 bg-[#0a0a0a] min-h-screen p-6">
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="text-4xl font-black uppercase tracking-tighter text-white">
+        Customer <span class="text-green-500">Messages</span>
+      </h2>
+      <p class="text-gray-500 text-sm mt-1 tracking-wide">Manage inquiries and provide support to your clients.</p>
+    </div>
+    <button (click)="loadMessages()" class="p-3 bg-[#111] border border-gray-800 rounded-xl hover:text-green-500 transition shadow-lg">
+      🔄 Refresh
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6">
+    <div *ngFor="let msg of messageList" 
+         class="bg-[#111] p-8 rounded-[2.5rem] border border-gray-900 group hover:border-green-500/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
+      
+      <div class="absolute top-8 right-8">
+        <span [ngClass]="msg.status === 'PENDING' ? 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20' : 'text-green-500 bg-green-500/10 border-green-500/20'" 
+              class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase border tracking-widest">
+          ● {{ msg.status }}
+        </span>
+      </div>
+
+      <div class="flex items-start gap-6">
+        <div class="w-14 h-14 rounded-2xl bg-gray-900 flex items-center justify-center font-black text-green-500 text-xl border border-gray-800">
+          {{ msg.customerName.charAt(0).toUpperCase() }}
+        </div>
+
+        <div class="flex-1">
+          <h4 class="text-white text-xl font-bold">{{ msg.customerName }}</h4>
+          <p class="text-gray-600 text-xs font-black uppercase tracking-widest mt-1">{{ msg.email }}</p>
+          
+          <div class="mt-6 bg-black/40 p-6 rounded-2xl border border-gray-900 italic text-gray-300 leading-relaxed relative">
+            <span class="absolute -top-3 left-6 bg-[#111] px-2 text-[10px] font-black text-gray-600 uppercase">Message</span>
+            "{{ msg.message }}"
+          </div>
+
+          <div class="mt-8 pt-8 border-t border-gray-800/50">
+            
+            <div *ngIf="msg.adminReply" class="bg-green-600/5 p-6 rounded-2xl border border-green-900/20 relative">
+              <span class="absolute -top-3 left-6 bg-[#111] px-2 text-[10px] font-black text-green-500 uppercase tracking-tighter">Your Response</span>
+              <p class="text-gray-400 text-sm leading-relaxed">{{ msg.adminReply }}</p>
+              <p class="text-[9px] text-gray-700 font-black uppercase mt-4 italic">Replied on: {{ msg.replyTimestamp | date:'medium' }}</p>
+            </div>
+
+            <div *ngIf="!msg.adminReply" class="flex flex-col gap-4">
+              <textarea #replyText rows="3" 
+                        class="w-full bg-black border border-gray-800 rounded-2xl px-6 py-4 text-sm text-white focus:border-green-500 outline-none transition" 
+                        placeholder="Write your professional response here..."></textarea>
+              
+              <div class="flex justify-end">
+                <button (click)="sendReply(msg.id, replyText.value)" 
+                        class="bg-green-600 hover:bg-green-500 text-black font-black px-8 py-3 rounded-xl uppercase text-[10px] tracking-widest transition shadow-lg shadow-green-900/20">
+                  Send Response
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-between items-center text-[9px] font-black text-gray-700 uppercase tracking-tighter">
+        <span>Received: {{ msg.timestamp | date:'medium' }}</span>
+        <span>Reference: #{{ msg.id }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="messageList.length === 0" class="p-32 text-center flex flex-col items-center gap-4 bg-[#111] rounded-[2.5rem] border border-gray-900">
+      <span class="text-6xl opacity-10 text-white">✉️</span>
+      <p class="text-gray-700 font-bold uppercase tracking-widest text-xs">No customer messages found in the system.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<nav class="bg-black shadow-lg shadow-green-900/20 fixed w-full z-50 top-0">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      
+      <div class="flex-shrink-0 flex items-center cursor-pointer" routerLink="/home">
+        <h1 class="text-2xl font-black italic tracking-tighter">
+          <span class="text-white">LANKA</span>
+          <span class="text-[#00D26A]">RENT</span>
+        </h1>
+      </div>
+
+      <div class="hidden md:flex space-x-8 items-center">
+        <a routerLink="/home" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">Home</a>
+        <a routerLink="/vehicles" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">Vehicles</a>
+        <a routerLink="/bookings" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">My Bookings</a>
+        <a routerLink="/about" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">About</a>
+        <a routerLink="/contactUs" routerLinkActive="text-green-400 border-green-500" class="text-gray-300 hover:text-green-400 px-3 py-2 text-base font-medium transition duration-300 border-b-2 border-transparent">Contact_Us</a>
+      </div>
+
+      <div class="hidden md:flex items-center space-x-6">
+        
+        <ng-container *ngIf="!(auth.isLoggedIn$ | async)">
+          <a routerLink="/login" class="text-gray-300 hover:text-green-400 font-medium text-base transition duration-300">Login</a>
+          <button routerLink="/register" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2.5 px-6 rounded-full transition duration-300 shadow-[0_0_15px_rgba(34,197,94,0.4)]">Sign Up</button>
+        </ng-container>
+
+        <ng-container *ngIf="auth.isLoggedIn$ | async">
+          <div class="flex items-center gap-6 bg-white/5 px-6 py-2 rounded-2xl border border-white/10">
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em]">Welcome,</span>
+              <span class="text-green-500 font-bold text-sm uppercase italic tracking-wider">{{ auth.currentUser$ | async }}</span>
+            </div>
+            <button (click)="onLogout()" class="text-red-500 font-black text-xs hover:text-red-400 transition uppercase tracking-widest pl-4 border-l border-white/10">
+              Logout
+            </button>
+          </div>
+        </ng-container>
+
+      </div>
+
+      <div class="md:hidden flex items-center">
+        <button (click)="toggleMenu()" class="text-green-500 hover:text-green-400 focus:outline-none">
+          <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path *ngIf="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+            <path *ngIf="isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isMenuOpen" class="md:hidden bg-[#0a0a0a] border-t border-gray-900 animate-fade-in-down">
+    <div class="px-4 pt-2 pb-6 space-y-2 shadow-2xl">
+      <a routerLink="/home" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">Home</a>
+      <a routerLink="/vehicles" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">Vehicles</a>
+      <a routerLink="/bookings" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">My Bookings</a>
+      <a routerLink="/about" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">About</a>
+      <a routerLink="/contactUs" (click)="toggleMenu()" class="block text-gray-300 hover:text-green-500 px-3 py-4 text-lg font-bold border-b border-gray-900">Contact Us</a>
+
+      <div class="pt-4">
+        <ng-container *ngIf="!(auth.isLoggedIn$ | async)">
+          <a routerLink="/login" (click)="toggleMenu()" class="block text-gray-300 px-3 py-4 text-lg font-bold">Login</a>
+          <button routerLink="/register" (click)="toggleMenu()" class="w-full bg-green-600 text-black font-black py-4 rounded-xl mt-4 uppercase">Sign Up Now</button>
+        </ng-container>
+
+        <ng-container *ngIf="auth.isLoggedIn$ | async">
+          <div class="p-4 bg-white/5 rounded-2xl border border-white/10 mt-4">
+            <p class="text-gray-500 text-[10px] font-black uppercase mb-1">Active User</p>
+            <p class="text-green-500 font-bold text-xl uppercase mb-4">{{ auth.currentUser$ | async }}</p>
+            <button (click)="onLogout(); toggleMenu()" class="w-full bg-red-500/10 text-red-500 font-black py-4 rounded-xl border border-red-500/20 uppercase">Logout</button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="pt-20"></div>
